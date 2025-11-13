@@ -32,10 +32,8 @@ jobs:
 
       - name: Verify build output
         run: |
-          test -f index.js || exit 1
-          test -f index.d.ts || exit 1
-          test -f dist/Gluify.js || exit 1
-          test -f dist/Gluify.d.ts || exit 1
+          test -f dist/index.js || exit 1
+          test -f dist/index.d.ts || exit 1
           echo "Build output verified!"
 
       - name: Run tests
