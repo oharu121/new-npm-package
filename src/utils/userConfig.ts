@@ -8,7 +8,7 @@ import { dirname } from "path";
 import { mkdir } from "fs/promises";
 import envPaths from "env-paths";
 
-const paths = envPaths("new-npm-package", { suffix: "" });
+const paths = envPaths("forge-npm-pkg", { suffix: "" });
 const CONFIG_PATH = `${paths.config}/config.json`;
 
 export interface UserConfig {

@@ -29,7 +29,7 @@ ${
 `;
 
   const description =
-    config.description || "A new npm package created with new-npm-package.";
+    config.description || "A new npm package created with forge-npm-pkg.";
 
   return `# ${config.packageName}
 

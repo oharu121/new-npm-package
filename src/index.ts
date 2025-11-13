@@ -90,7 +90,7 @@ async function checkPackageAvailability(packageName: string): Promise<boolean> {
 const program = new Command();
 
 program
-  .name("new-npm-package")
+  .name("forge-npm-pkg")
   .description("Scaffold a production-ready npm package")
   .argument("[package-name]", "Name of the package to create")
   .option(

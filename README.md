@@ -1,13 +1,13 @@
-# new-npm-package
+# forge-npm-pkg
 
-[![npm version](https://badge.fury.io/js/new-npm-package.svg)](https://badge.fury.io/js/new-npm-package)
-![License](https://img.shields.io/npm/l/new-npm-package)
-![Types](https://img.shields.io/npm/types/new-npm-package)
-![NPM Downloads](https://img.shields.io/npm/dw/new-npm-package)
-![Last Commit](https://img.shields.io/github/last-commit/oharu121/new-npm-package)
-![Coverage](https://codecov.io/gh/oharu121/new-npm-package/branch/main/graph/badge.svg)
-![CI Status](https://github.com/oharu121/new-npm-package/actions/workflows/ci.yml/badge.svg)
-![GitHub Stars](https://img.shields.io/github/stars/oharu121/new-npm-package?style=social)
+[![npm version](https://badge.fury.io/js/forge-npm-pkg.svg)](https://badge.fury.io/js/forge-npm-pkg)
+![License](https://img.shields.io/npm/l/forge-npm-pkg)
+![Types](https://img.shields.io/npm/types/forge-npm-pkg)
+![NPM Downloads](https://img.shields.io/npm/dw/forge-npm-pkg)
+![Last Commit](https://img.shields.io/github/last-commit/oharu121/forge-npm-pkg)
+![Coverage](https://codecov.io/gh/oharu121/forge-npm-pkg/branch/main/graph/badge.svg)
+![CI Status](https://github.com/oharu121/forge-npm-pkg/actions/workflows/ci.yml/badge.svg)
+![GitHub Stars](https://img.shields.io/github/stars/oharu121/forge-npm-pkg?style=social)
 
 A powerful CLI tool to scaffold production-ready npm packages with modern best practices.
 
@@ -30,13 +30,13 @@ A powerful CLI tool to scaffold production-ready npm packages with modern best p
 ### Create a new package
 
 ```bash
-npx new-npm-package my-awesome-package
+npx forge-npm-pkg my-awesome-package
 ```
 
 Or without specifying a name (you'll be prompted):
 
 ```bash
-npx new-npm-package
+npx forge-npm-pkg
 ```
 
 ## What Gets Generated?
@@ -174,16 +174,17 @@ Save your author information once and reuse it for future projects:
 
 ```bash
 # First time - you'll be prompted to save
-npx new-npm-package my-package
+npx forge-npm-pkg my-package
 # Enter your name, email, GitHub username
 # Choose "Yes" when asked to save for future projects
 
 # Future runs - config loaded automatically
-npx new-npm-package another-package
+npx forge-npm-pkg another-package
 # Your info is pre-filled!
 ```
 
 **Smart Git Integration:**
+
 - Automatically detects git config (user.name, user.email)
 - Asks for confirmation: "Use git config: Name <email>?"
 - Only prompts for GitHub username if you confirm
@@ -192,18 +193,19 @@ npx new-npm-package another-package
 
 ```bash
 # View stored configuration
-npx new-npm-package --config
+npx forge-npm-pkg --config
 
 # Reset stored configuration
-npx new-npm-package --reset-config
+npx forge-npm-pkg --reset-config
 
 # Skip saving config this time
-npx new-npm-package my-package --no-save
+npx forge-npm-pkg my-package --no-save
 ```
 
 **Storage Location:**
-- Windows: `C:\Users\{user}\AppData\Roaming\new-npm-package\config.json`
-- Mac/Linux: `~/.config/new-npm-package/config.json`
+
+- Windows: `C:\Users\{user}\AppData\Roaming\forge-npm-pkg\config.json`
+- Mac/Linux: `~/.config/forge-npm-pkg/config.json`
 
 ## Requirements
 
@@ -215,8 +217,8 @@ npx new-npm-package my-package --no-save
 ### Build this CLI tool
 
 ```bash
-git clone https://github.com/yourusername/new-npm-package
-cd new-npm-package
+git clone https://github.com/yourusername/forge-npm-pkg
+cd forge-npm-pkg
 npm install
 npm run build
 ```
@@ -282,7 +284,7 @@ npm run test:all            # Typecheck + Unit + E2E
 
 ```bash
 npm link
-new-npm-package test-package
+forge-npm-pkg test-package
 ```
 
 ## Why This Tool?
