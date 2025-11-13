@@ -46,10 +46,6 @@ lerna-debug.log*
 .yarn/
 .pnpm-store/
 .npm/
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-bun.lockb
 
 # Documentation (internal use only)
 docs
