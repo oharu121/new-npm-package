@@ -1,0 +1,55 @@
+name: Publish to NPM
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    name: Release to NPM
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Verify build output
+        run: |
+          test -f index.js || exit 1
+          test -f index.d.ts || exit 1
+          test -f dist/Gluify.js || exit 1
+          test -f dist/Gluify.d.ts || exit 1
+          echo "Build output verified!"
+
+      - name: Run tests
+        run: npm test
+
+      - name: Publish to NPM
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+# To use this workflow:
+# 1. Get your npm token: npm login, then cat ~/.npmrc
+# 2. Add it to GitHub: Settings > Secrets and variables > Actions > New repository secret
+#    Name: NPM_TOKEN
+#    Value: Your npm token (starts with npm_...)
+# 3. Create a GitHub release (not just a git tag)
+# 4. The workflow will automatically publish to npm

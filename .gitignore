@@ -7,6 +7,8 @@ node_modules/
 coverage/
 *.lcov
 .nyc_output/
+.test-output/
+.dev-test/
 
 # Build output
 dist/

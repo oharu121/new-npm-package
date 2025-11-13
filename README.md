@@ -1,4 +1,13 @@
-# create-npm-package
+# new-npm-package
+
+[![npm version](https://badge.fury.io/js/new-npm-package.svg)](https://badge.fury.io/js/new-npm-package)
+![License](https://img.shields.io/npm/l/new-npm-package)
+![Types](https://img.shields.io/npm/types/new-npm-package)
+![NPM Downloads](https://img.shields.io/npm/dw/new-npm-package)
+![Last Commit](https://img.shields.io/github/last-commit/oharu121/new-npm-package)
+![Coverage](https://codecov.io/gh/oharu121/new-npm-package/branch/main/graph/badge.svg)
+![CI Status](https://github.com/oharu121/new-npm-package/actions/workflows/ci.yml/badge.svg)
+![GitHub Stars](https://img.shields.io/github/stars/oharu121/new-npm-package?style=social)
 
 A powerful CLI tool to scaffold production-ready npm packages with modern best practices.
 
@@ -9,8 +18,9 @@ A powerful CLI tool to scaffold production-ready npm packages with modern best p
 - Multiple module formats: ESM, CommonJS, or Dual (both)
 - Built-in testing with Vitest or Jest
 - ESLint + Prettier for code quality
+- GitHub Actions CI/CD workflows (optional)
 - Automated releases with Changesets
-- GitHub Actions workflow included
+- User configuration storage (save author info for future projects)
 - Package export validation with `@arethetypeswrong/cli`
 - Proper `package.json` exports configuration
 - Git repository initialization
@@ -20,13 +30,13 @@ A powerful CLI tool to scaffold production-ready npm packages with modern best p
 ### Create a new package
 
 ```bash
-npx create-npm-package my-awesome-package
+npx new-npm-package my-awesome-package
 ```
 
 Or without specifying a name (you'll be prompted):
 
 ```bash
-npx create-npm-package
+npx new-npm-package
 ```
 
 ## What Gets Generated?
@@ -156,6 +166,45 @@ If you enabled Changesets, use this workflow:
 4. The CI will create a release PR
 5. Merge the PR to publish automatically
 
+## Configuration Management
+
+### User Config Storage
+
+Save your author information once and reuse it for future projects:
+
+```bash
+# First time - you'll be prompted to save
+npx new-npm-package my-package
+# Enter your name, email, GitHub username
+# Choose "Yes" when asked to save for future projects
+
+# Future runs - config loaded automatically
+npx new-npm-package another-package
+# Your info is pre-filled!
+```
+
+**Smart Git Integration:**
+- Automatically detects git config (user.name, user.email)
+- Asks for confirmation: "Use git config: Name <email>?"
+- Only prompts for GitHub username if you confirm
+
+**Config Commands:**
+
+```bash
+# View stored configuration
+npx new-npm-package --config
+
+# Reset stored configuration
+npx new-npm-package --reset-config
+
+# Skip saving config this time
+npx new-npm-package my-package --no-save
+```
+
+**Storage Location:**
+- Windows: `C:\Users\{user}\AppData\Roaming\new-npm-package\config.json`
+- Mac/Linux: `~/.config/new-npm-package/config.json`
+
 ## Requirements
 
 - Node.js >= 18.0.0
@@ -166,17 +215,74 @@ If you enabled Changesets, use this workflow:
 ### Build this CLI tool
 
 ```bash
-git clone https://github.com/yourusername/create-npm-package
-cd create-npm-package
+git clone https://github.com/yourusername/new-npm-package
+cd new-npm-package
 npm install
 npm run build
 ```
 
-### Test locally
+### Testing Strategy
+
+This project uses a multi-layered testing approach to ensure quality:
+
+#### 1. Unit Tests (Vitest)
+
+Test individual generator functions and validators:
+
+```bash
+npm test                    # Run unit tests once
+npm run test:watch          # Run in watch mode
+npm run test:coverage       # Generate coverage report
+npm run test:ui             # Interactive UI mode
+```
+
+#### 2. E2E Tests
+
+Automated end-to-end tests that verify the full CLI workflow:
+
+```bash
+npm run test:e2e            # Creates project, runs build and tests
+```
+
+#### 3. Developer Testing (Experience the CLI)
+
+Quick scripts to manually test the CLI flow and UX:
+
+```bash
+npm run dev:test            # Interactive mode - experience all prompts
+npm run dev:test:quick      # Quick mode with -y flag
+```
+
+These generate projects in `.dev-test/` which is auto-cleaned and gitignored.
+
+**Why separate dev testing?**
+
+- Unit/E2E tests verify correctness
+- Dev testing validates UX and flow
+- Allows you to experience the CLI as users do
+- Quick iteration on prompts and messaging
+
+#### 4. CI/CD (GitHub Actions)
+
+Automated testing on every push:
+
+- Runs on Node 18 & 20
+- Type checking
+- Unit tests
+- E2E tests
+- Coverage reporting
+
+### Run All Tests
+
+```bash
+npm run test:all            # Typecheck + Unit + E2E
+```
+
+### Test locally with npm link
 
 ```bash
 npm link
-create-npm-package test-package
+new-npm-package test-package
 ```
 
 ## Why This Tool?
