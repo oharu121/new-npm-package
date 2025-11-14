@@ -677,24 +677,39 @@ Package Manager: ${config.packageManager}${
       spinner.stop("✓ Project structure created!");
 
       // Step 7: Install dependencies
-      if (!skipInstall) {
-        spinner.start(
-          `Installing dependencies with ${config.packageManager} (this may take a minute)`
+      let shouldInstall = !skipInstall;
+
+      // Ask user if they want to install dependencies (unless using --yes or --skip-install)
+      if (!skipInstall && !useDefaults) {
+        shouldInstall = handleCancel(
+          await clack.confirm({
+            message: `Install dependencies now with ${config.packageManager}?`,
+            initialValue: true,
+          })
         );
+      }
+
+      if (shouldInstall) {
+        clack.log.step(
+          `Installing dependencies with ${config.packageManager}...`
+        );
+        clack.log.info("This may take a minute. Please wait...");
 
         try {
           const installCmd =
             config.packageManager === "yarn"
               ? "yarn"
               : `${config.packageManager} install`;
+
+          // Use 'inherit' to show live output instead of hiding it
           execSync(installCmd, {
             cwd: targetDir,
-            stdio: "pipe",
+            stdio: "inherit",
           });
 
-          spinner.stop("✓ Dependencies installed!");
+          clack.log.success("✓ Dependencies installed!");
         } catch (error) {
-          spinner.stop("⚠ Failed to install dependencies");
+          clack.log.error("⚠ Failed to install dependencies");
           const errorMsg =
             error instanceof Error ? error.message : "Unknown error";
           clack.log.warn(`Error: ${errorMsg}`);
@@ -704,11 +719,11 @@ Package Manager: ${config.packageManager}${
           );
         }
       } else {
-        clack.log.info("⏭ Skipping dependency installation (--skip-install)");
+        clack.log.info("⏭ Skipping dependency installation");
       }
 
       // Step 8: Initialize git and changesets in parallel (only if dependencies were installed)
-      if (!skipInstall) {
+      if (shouldInstall) {
         const postInstallTasks: Promise<{
           success: boolean;
           task: string;
@@ -820,7 +835,7 @@ Package Manager: ${config.packageManager}${
 
       console.log("\n📦 Next steps:\n");
       console.log(`  cd ${finalPackageName}`);
-      if (skipInstall) {
+      if (!shouldInstall) {
         console.log(
           `  ${config.packageManager} install  # Install dependencies`
         );

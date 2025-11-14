@@ -14,7 +14,7 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "dev:clean": "rimraf .dev-test .test-output",
-    "dev:test": "npm run dev:clean && npm run build && node dist/index.js .dev-test/my-package --skip-install",
+    "dev:test": "npm run dev:clean && npm run build && node dist/index.js .dev-test/my-package",
     "dev:test:quick": "npm run dev:clean && npm run build && node dist/index.js .dev-test/my-package -y --skip-install",
     "dev:test:full": "npm run dev:clean && npm run build && node dist/index.js .dev-test/my-package -y",
     "typecheck": "tsc --noEmit",
