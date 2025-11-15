@@ -93,35 +93,30 @@ npm run check:exports
     : ""
 }
 ${
-  config.useChangesets
+  config.setupCD
     ? `## Release Workflow
 
-This package uses [Changesets](https://github.com/changesets/changesets) for version management and automated releases.
+This package uses automated publishing via GitHub Actions.
 
 ### Creating a Release
 
 1. **Make your changes** and commit them
-2. **Create a changeset:**
+2. **Update the version:**
    \`\`\`bash
-   npm run changeset
+   npm version patch  # for bug fixes
+   npm version minor  # for new features
+   npm version major  # for breaking changes
    \`\`\`
-   Select the type of change (major/minor/patch) and provide a description
-3. **Commit the changeset:**
+3. **Push the changes and tags:**
    \`\`\`bash
-   git add .
-   git commit -m "feat: your feature description"
-   git push
+   git push && git push --tags
    \`\`\`
-4. **Merge the "Version Packages" PR** created by the Changesets bot
-5. **Package automatically publishes to npm** 🎉
+4. **Package automatically publishes to npm** 🎉
 
-### Available Scripts
-
-- \`npm run changeset\` - Create a new changeset (run this for each change)
-- \`npm run version-packages\` - Bump versions based on changesets (automated via CI)
-- \`npm run release\` - Publish to npm (automated via CI - **do not run manually!**)
-
-**⚠️ Important:** The \`release\` script is automatically run by GitHub Actions. Running it manually may cause unexpected behavior.
+The GitHub Actions workflow will automatically:
+- Run all tests
+- Build the package
+- Publish to npm when a git tag is pushed
 
 `
     : ""

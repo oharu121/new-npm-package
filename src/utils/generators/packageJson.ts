@@ -51,13 +51,6 @@ export function generatePackageJson(config: ProjectConfig): Record<string, any> 
     pkg.homepage = `https://github.com/${config.githubUsername}/${config.packageName}#readme`;
   }
 
-  // Add changeset scripts if using changesets
-  if (config.useChangesets) {
-    pkg.scripts.changeset = 'changeset';
-    pkg.scripts['version-packages'] = 'changeset version';
-    pkg.scripts.release = 'changeset publish';
-  }
-
   return pkg;
 }
 
@@ -234,11 +227,6 @@ function generateDevDependencies(config: ProjectConfig): Record<string, string> 
     deps.eslint = '^8.56.0';
     deps.prettier = '^3.2.4';
     deps['eslint-config-prettier'] = '^9.1.0';
-  }
-
-  // Changesets for automated releases
-  if (config.useChangesets) {
-    deps['@changesets/cli'] = '^2.27.1';
   }
 
   return deps;

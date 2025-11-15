@@ -1,45 +1,5 @@
 # Changelog
 
-## 1.2.0
-
-### Minor Changes
-
-- 1db441a: Removed preset selection
-- 1db441a: Simplify CLI experience and add optional features
-
-  **Breaking Change:**
-
-  - Remove preset selection (Library/CLI/Legacy/Custom) for cleaner UX
-  - Interactive mode now directly asks all configuration questions
-  - `--yes` flag continues to work with sensible defaults
-
-  **New Features:**
-
-  - Add `useCodecov` option to make test coverage tracking opt-in (default: false)
-  - Add `useDependabot` option for automated dependency updates (default: false)
-  - Add educational notes before each prompt explaining benefits and requirements
-  - Make Codecov conditional in CI workflow to prevent failures when token is missing
-  - Generate `.github/dependabot.yml` when opted in
-  - Update README badges to conditionally show Codecov and CI status
-
-  **Improvements:**
-
-  - Display logo banner and version number at startup for better branding
-  - Educational notes now appear BEFORE all prompts (not after user selects)
-  - TypeScript is now the default language (first option, just press Enter)
-  - Added warning when JavaScript is selected to guide users toward TypeScript
-  - Updated language hints: "Recommended - Modern standard" vs "Simple projects only"
-  - Improved CD prompt with detailed benefits and workflow explanation
-  - Simpler mental model: either use defaults (--yes) or answer questions
-  - Less code to maintain, fewer potential bugs
-  - More consistent experience across all usage modes
-
-  **Project Setup:**
-
-  - Add Changesets support to forge-npm-pkg itself for automated releases
-  - Replace old publish.yml with proper Changesets release workflow
-  - Add Dependabot configuration to forge-npm-pkg repository
-
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -56,19 +16,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Conditional Codecov integration in CI workflow (only when opted-in, prevents failures when token is missing)
 - `.github/dependabot.yml` generation when Dependabot is opted-in
 - Conditional README badges (Codecov and CI status only shown when relevant)
-- Changesets support to forge-npm-pkg itself for automated releases
-- Proper Changesets release workflow (`.github/workflows/release.yml`)
+- Simple tag-based CD workflow (`publish.yml`) that triggers on git tags
 - Dependabot configuration for forge-npm-pkg repository maintenance
 
 ### Changed
 
 - **BREAKING**: Removed preset selection (Library/CLI/Legacy/Custom) for cleaner, more intuitive UX
+- **BREAKING**: Removed Changesets from both forge-npm-pkg and generated projects - now uses simple tag-based workflow
 - Interactive mode now directly asks all configuration questions instead of choosing presets
 - TypeScript is now the default language (first option, just press Enter)
 - Educational notes now appear BEFORE all prompts (not after user makes selection)
 - Updated language hints: "Recommended - Modern standard" for TypeScript vs "Simple projects only" for JavaScript
-- Improved CD prompt with detailed benefits, workflow explanation, and clear recommendations
-- Simplified mental model: either use defaults (`--yes` flag) or answer questions interactively
+- CD workflow now uses git tags (`v*`) instead of Changesets for automated publishing
+- Simplified CD setup: `npm version` + `git push --tags` instead of Changesets workflow
 - `--yes` flag continues to work with sensible defaults (no breaking change for this usage)
 
 ### Improved
@@ -77,11 +37,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - More consistent experience across all usage modes
 - Less code to maintain, fewer potential bugs
 - Better user education through contextual prompts
+- Simpler release workflow without Changesets complexity
+- CD prompt now explains tag-based workflow with clear step-by-step instructions
 
 ### Fixed
 
 - CD (Automated Publishing) benefits note now appears BEFORE the prompt, not after selection
 - All optional features (Codecov, Dependabot, CD) now follow consistent "inform then ask" pattern
+
+### Removed
+
+- Changesets dependency and all related scripts
+- Changesets configuration files (`.changeset/`)
+- `release.yml` workflow (replaced with simpler `publish.yml`)
 
 ## [1.1.0] - 2025-11-14
 

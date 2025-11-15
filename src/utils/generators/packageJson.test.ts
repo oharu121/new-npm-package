@@ -9,7 +9,6 @@ describe('generatePackageJson', () => {
     moduleType: 'esm',
     testRunner: 'vitest',
     useLinting: true,
-    useChangesets: false,
     initGit: true,
     packageManager: 'npm',
   };
@@ -282,12 +281,6 @@ describe('generatePackageJson', () => {
       expect(pkg.scripts['format:check']).toBe('prettier --check "src/**/*.{ts,js,json,md}"');
     });
 
-    it('should include release script when using changesets', () => {
-      const config = { ...baseConfig, useChangesets: true };
-      const pkg = generatePackageJson(config);
-
-      expect(pkg.scripts.release).toBe('changeset publish');
-    });
   });
 
   describe('devDependencies', () => {
@@ -325,13 +318,6 @@ describe('generatePackageJson', () => {
       expect(pkg.devDependencies['eslint-config-prettier']).toBeDefined();
       expect(pkg.devDependencies['@typescript-eslint/eslint-plugin']).toBeDefined();
       expect(pkg.devDependencies['@typescript-eslint/parser']).toBeDefined();
-    });
-
-    it('should include changesets when enabled', () => {
-      const config = { ...baseConfig, useChangesets: true };
-      const pkg = generatePackageJson(config);
-
-      expect(pkg.devDependencies['@changesets/cli']).toBeDefined();
     });
 
     it('should not include TypeScript-specific ESLint for JavaScript', () => {

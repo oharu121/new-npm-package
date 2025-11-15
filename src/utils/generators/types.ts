@@ -8,7 +8,6 @@ export interface ProjectConfig {
   moduleType: 'esm' | 'commonjs' | 'dual';
   testRunner: 'vitest' | 'jest' | 'none';
   useLinting: boolean;
-  useChangesets: boolean;
   initGit: boolean;
   setupCI?: boolean;
   setupCD?: boolean;

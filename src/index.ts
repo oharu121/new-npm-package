@@ -125,7 +125,6 @@ program
   .option("--jest", "Use Jest for testing")
   .option("--no-tests", "Skip testing setup")
   .option("--no-lint", "Skip ESLint + Prettier setup")
-  .option("--changesets", "Set up Changesets for releases")
   .option("--no-git", "Skip git initialization")
   .action(async (packageName?: string, options?: any) => {
     console.clear();
@@ -246,7 +245,6 @@ program
       let moduleType: "esm" | "commonjs" | "dual";
       let testRunner: "vitest" | "jest" | "none";
       let useLinting: boolean;
-      let useChangesets: boolean;
       let initGit: boolean;
       let setupCI: boolean;
       let setupCD: boolean;
@@ -260,7 +258,6 @@ program
         moduleType = "esm";
         testRunner = "vitest";
         useLinting = true;
-        useChangesets = false;
         initGit = false;
         setupCI = true;
         setupCD = false;
@@ -363,16 +360,15 @@ program
         if (setupCI) {
           // Show CD information BEFORE asking
           clack.note(
-            "Changesets automates version management and npm publishing.\n\n" +
+            "Automated publishing using GitHub Actions.\n\n" +
               "Benefits:\n" +
-              "• Automatically creates version bump PRs\n" +
-              "• Generates changelogs from your commit messages\n" +
-              "• Publishes to npm when PR is merged\n" +
-              "• No manual version bumping needed\n\n" +
+              "• Automatically publishes to npm when you create a GitHub release\n" +
+              "• Runs tests before publishing\n" +
+              "• No manual npm publish needed\n\n" +
               "How it works:\n" +
-              "1. Run: npm run changeset (describe your changes)\n" +
-              '2. Changesets bot creates a "Version Packages" PR\n' +
-              "3. Merge PR → automatically publishes to npm\n\n" +
+              "1. Update version: npm version patch/minor/major\n" +
+              "2. Push: git push && git push --tags\n" +
+              "3. Create GitHub release → automatically publishes to npm\n\n" +
               "Recommended: Skip for beginners (can set up later)\n" +
               "Requires: NPM_TOKEN secret in GitHub repository",
             "Automated Publishing (CD)"
@@ -384,12 +380,6 @@ program
               initialValue: false,
             })
           );
-
-          if (setupCD) {
-            useChangesets = true; // Enable Changesets when CD is requested
-          } else {
-            useChangesets = false;
-          }
 
           // Ask about Codecov only if tests are configured
           if (testRunner !== "none") {
@@ -435,7 +425,6 @@ program
           );
         } else {
           setupCD = false;
-          useChangesets = false;
           useCodecov = false; // No CI, no Codecov
           useDependabot = false; // No CI, no Dependabot
         }
@@ -602,7 +591,6 @@ program
         moduleType,
         testRunner,
         useLinting,
-        useChangesets,
         initGit,
         setupCI,
         setupCD,
@@ -627,7 +615,7 @@ Git: ${config.initGit ? "Yes" : "No"}
 CI/CD: ${
             config.setupCI
               ? config.setupCD
-                ? "CI + CD (with Changesets)"
+                ? "CI + CD"
                 : "CI only"
               : "No"
           }${
@@ -709,11 +697,11 @@ Package Manager: ${config.packageManager}${
             `    jest.config.${config.language === "typescript" ? "ts" : "js"}`
           );
         }
-        if (config.useChangesets) {
-          clack.log.info(`    .github/workflows/release.yml`);
-        }
         if (config.setupCI) {
           clack.log.info(`    .github/workflows/ci.yml`);
+        }
+        if (config.setupCD) {
+          clack.log.info(`    .github/workflows/publish.yml`);
         }
         if (config.useDependabot) {
           clack.log.info(`    .github/dependabot.yml`);
@@ -807,26 +795,6 @@ Package Manager: ${config.packageManager}${
           );
         }
 
-        if (config.useChangesets) {
-          postInstallTasks.push(
-            (async () => {
-              try {
-                execSync("npx changeset init", {
-                  cwd: targetDir,
-                  stdio: "pipe",
-                });
-                return { success: true, task: "changesets" };
-              } catch (error) {
-                return {
-                  success: false,
-                  task: "changesets",
-                  error:
-                    error instanceof Error ? error.message : "Unknown error",
-                };
-              }
-            })()
-          );
-        }
 
         if (postInstallTasks.length > 0) {
           spinner.start("Running post-install tasks");
@@ -1080,52 +1048,51 @@ describe('add', () => {
   }
 
   // GitHub Actions workflows and Dependabot
-  if (config.useChangesets || config.setupCI || config.useDependabot) {
+  if (config.setupCD || config.setupCI || config.useDependabot) {
     const githubDir = join(targetDir, ".github");
     const workflowDir = join(githubDir, "workflows");
     await mkdir(workflowDir, { recursive: true });
 
-    // Changesets release workflow
-    if (config.useChangesets) {
-      const releaseWorkflow = `name: Release
+    // CD publish workflow
+    if (config.setupCD) {
+      const publishWorkflow = `name: Publish to npm
 
 on:
   push:
-    branches:
-      - main
-
-concurrency: \${{ github.workflow }}-\${{ github.ref }}
+    tags:
+      - 'v*'
 
 jobs:
-  release:
-    name: Release
+  publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
     steps:
-      - name: Checkout Repo
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
 
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Run Tests
+        run: npm run test:all
 
-      - name: Create Release Pull Request or Publish to npm
-        id: changesets
-        uses: changesets/action@v1
-        with:
-          publish: npm run release
+      - name: Publish to npm
+        run: npm publish --access public
         env:
-          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: \${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: \${{ secrets.NPM_TOKEN }}
 `;
 
-      await writeFile(join(workflowDir, "release.yml"), releaseWorkflow);
+      await writeFile(join(workflowDir, "publish.yml"), publishWorkflow);
     }
 
     // CI workflow
