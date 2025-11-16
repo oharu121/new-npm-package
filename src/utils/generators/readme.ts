@@ -16,7 +16,6 @@ export function generateReadme(config: ProjectConfig): string {
 [![npm version](https://badge.fury.io/js/${packageName}.svg)](https://badge.fury.io/js/${packageName})
 ![License](https://img.shields.io/npm/l/${packageName})
 ![Types](https://img.shields.io/npm/types/${packageName})
-
 ![NPM Downloads](https://img.shields.io/npm/dw/${packageName})
 ![Last Commit](https://img.shields.io/github/last-commit/oharu121/${packageName})
 ${
