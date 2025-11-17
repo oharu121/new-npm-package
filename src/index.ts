@@ -117,7 +117,7 @@ program
   .argument("[package-name]", "Name of the package to create")
   .option(
     "-y, --yes",
-    "Skip prompts and use recommended defaults (TypeScript + ESM + Vitest + Linting)"
+    "Skip prompts and use recommended defaults (TypeScript + Vitest + Linting)"
   )
   .option("--dry-run", "Show what would be generated without creating files")
   .option("--skip-install", "Skip dependency installation")
@@ -129,9 +129,6 @@ program
   .option("--config", "Show current stored configuration")
   .option("--typescript", "Use TypeScript")
   .option("--javascript", "Use JavaScript")
-  .option("--esm", "Use ESM module format")
-  .option("--cjs", "Use CommonJS module format")
-  .option("--dual", "Use dual (ESM + CJS) format")
   .option("--vitest", "Use Vitest for testing")
   .option("--jest", "Use Jest for testing")
   .option("--no-tests", "Skip testing setup")
@@ -266,7 +263,7 @@ program
       if (useDefaults) {
         // Use sensible defaults when --yes flag is used
         language = "typescript";
-        moduleType = "esm";
+        moduleType = "dual";
         testRunner = "vitest";
         useLinting = true;
         initGit = false;
@@ -304,36 +301,8 @@ program
           );
         }
 
-        moduleType = handleCancel(
-          await clack.select({
-            message: "Which module format?",
-            options: [
-              {
-                value: "esm",
-                label: "ESM only",
-                hint: "Node 14+, modern bundlers",
-              },
-              {
-                value: "dual",
-                label: "ESM + CommonJS",
-                hint: "Support older Node versions",
-              },
-              {
-                value: "commonjs",
-                label: "CommonJS only",
-                hint: "Legacy projects only",
-              },
-            ],
-          })
-        ) as "esm" | "commonjs" | "dual";
-
-        // Warn about Jest + ESM
-        if (moduleType === "esm") {
-          clack.note(
-            "For ESM projects, Vitest is recommended as Jest has limited ESM support.",
-            "Note"
-          );
-        }
+        // Always use dual format for maximum compatibility
+        moduleType = "dual";
 
         testRunner = handleCancel(
           await clack.select({
@@ -662,7 +631,7 @@ Package Manager: ${config.packageManager}${
       } else {
         // Show simplified message when using defaults
         clack.log.info(
-          `Creating ${config.packageName} with recommended defaults (TypeScript + ESM + Vitest + Linting)`
+          `Creating ${config.packageName} with recommended defaults (TypeScript + Vitest + Linting)`
         );
       }
 

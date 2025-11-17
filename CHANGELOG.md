@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0]
+
+### Changed
+
+- **BREAKING**: Module format is now always dual (ESM + CommonJS) for maximum compatibility
+- Removed module format selection prompt - all packages now support both ESM and CommonJS by default
+- Removed `--esm`, `--cjs`, and `--dual` CLI flags (no longer needed)
+- Updated `--yes` flag description to reflect dual format default
+
+### Rationale
+
+The dual format provides maximum compatibility with minimal overhead. Modern bundlers and Node.js handle both formats seamlessly, and the build complexity is negligible with modern tools like tsup. This change:
+- Eliminates decision fatigue for users
+- Ensures packages work everywhere (old and new Node.js versions, all bundlers)
+- Simplifies the CLI interface
+- Follows the principle that good defaults are better than choices
+
 ## [1.5.0]
 
 ### Added
