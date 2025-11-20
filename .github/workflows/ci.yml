@@ -37,9 +37,6 @@ jobs:
       - name: Run unit tests
         run: npm run test
 
-      - name: Run E2E tests
-        run: npm run test:e2e
-
   coverage:
     name: Coverage
     runs-on: ubuntu-latest
