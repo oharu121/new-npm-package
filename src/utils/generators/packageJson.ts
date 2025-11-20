@@ -7,13 +7,41 @@ import type { ProjectConfig } from './types.js';
 import { fetchLatestVersions } from '../versionFetcher.js';
 import { getNodeLTSVersions } from '../nodeFetcher.js';
 
+interface PackageJson {
+  name: string;
+  version: string;
+  description: string;
+  type: 'module' | 'commonjs';
+  main?: string;
+  module?: string;
+  types?: string;
+  exports?: Record<string, unknown>;
+  files: string[];
+  scripts: Record<string, string>;
+  keywords: string[];
+  author: string;
+  license: string;
+  engines: {
+    node: string;
+  };
+  devDependencies: Record<string, string>;
+  repository?: {
+    type: string;
+    url: string;
+  };
+  bugs?: {
+    url: string;
+  };
+  homepage?: string;
+}
+
 /**
  * Generates a complete package.json based on the project configuration.
  * This is the most critical function as it handles the complex exports mapping
  * for different module types (ESM, CommonJS, Dual).
  */
 export async function generatePackageJson(config: ProjectConfig): Promise<{
-  packageJson: Record<string, unknown>;
+  packageJson: PackageJson;
   warnings: string[];
   nodeConfig: import('../nodeFetcher.js').NodeVersionConfig;
 }> {
@@ -35,7 +63,7 @@ export async function generatePackageJson(config: ProjectConfig): Promise<{
   // Fetch Node.js LTS versions
   const nodeConfig = await getNodeLTSVersions();
 
-  const pkg: Record<string, unknown> = {
+  const pkg: PackageJson = {
     name: config.packageName,
     version: '0.1.0',
     description: config.description || 'A new npm package',
@@ -101,10 +129,10 @@ function generateFilesList(config: ProjectConfig): string[] {
  * - These re-export from the compiled dist/ folder
  * - This ensures clean IDE autocomplete (shows package name, not package/dist)
  */
-function generateEntryPoints(config: ProjectConfig): Record<string, unknown> {
+function generateEntryPoints(config: ProjectConfig): Partial<Pick<PackageJson, 'main' | 'module' | 'types' | 'exports'>> {
   const isTypeScript = config.language === 'typescript';
 
-  const entryPoints: Record<string, unknown> = {};
+  const entryPoints: Partial<Pick<PackageJson, 'main' | 'module' | 'types' | 'exports'>> = {};
 
   // For JavaScript projects without build step
   if (!isTypeScript) {

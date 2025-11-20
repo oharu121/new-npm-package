@@ -5,11 +5,35 @@
 
 import type { ProjectConfig } from './types.js';
 
+interface ESLintConfig {
+  env: {
+    node: boolean;
+    es2021: boolean;
+  };
+  extends: string[];
+  parserOptions: {
+    ecmaVersion: string;
+    sourceType: string;
+  };
+  rules: Record<string, unknown>;
+  parser?: string;
+  plugins?: string[];
+}
+
+interface PrettierConfig {
+  semi: boolean;
+  trailingComma: string;
+  singleQuote: boolean;
+  printWidth: number;
+  tabWidth: number;
+  useTabs: boolean;
+}
+
 /**
  * Generates ESLint configuration
  */
-export function generateEslintConfig(config: ProjectConfig): Record<string, unknown> {
-  const eslintConfig: Record<string, unknown> = {
+export function generateEslintConfig(config: ProjectConfig): ESLintConfig {
+  const eslintConfig: ESLintConfig = {
     env: {
       node: true,
       es2021: true,
@@ -40,7 +64,7 @@ export function generateEslintConfig(config: ProjectConfig): Record<string, unkn
 /**
  * Generates Prettier configuration
  */
-export function generatePrettierConfig(): Record<string, unknown> {
+export function generatePrettierConfig(): PrettierConfig {
   return {
     semi: true,
     trailingComma: 'es5',
