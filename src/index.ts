@@ -25,6 +25,7 @@ import {
   generateRootIndexDts,
   generateCIWorkflow,
   generateDependabotConfig,
+  generateReleaseScript,
 } from "./utils/generators/index.js";
 import {
   readUserConfig,
@@ -1098,6 +1099,21 @@ jobs:
         join(githubDir, "dependabot.yml"),
         generateDependabotConfig()
       );
+    }
+  }
+
+  // Release automation script (only for projects with CI/CD setup)
+  if (config.setupCD) {
+    const scriptsDir = join(targetDir, "scripts");
+    await mkdir(scriptsDir, { recursive: true });
+    await writeFile(join(scriptsDir, "release.mjs"), generateReleaseScript(config));
+
+    // Make the script executable on Unix systems
+    try {
+      const { chmodSync } = await import('fs');
+      chmodSync(join(scriptsDir, "release.mjs"), 0o755);
+    } catch {
+      // Ignore chmod errors on Windows
     }
   }
 

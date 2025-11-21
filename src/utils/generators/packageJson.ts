@@ -240,6 +240,12 @@ function generateScripts(config: ProjectConfig): Record<string, string> {
     scripts['sync:quick'] = 'git pull --rebase && npm install';
   }
 
+  // Release automation scripts (only for projects with CI/CD setup)
+  if (config.setupCD) {
+    scripts.preversion = 'npm run build && npm test';
+    scripts.release = 'node scripts/release.mjs';
+  }
+
   return scripts;
 }
 
@@ -278,6 +284,11 @@ async function generateDevDependencies(config: ProjectConfig): Promise<{
       packagesToFetch.push('@typescript-eslint/eslint-plugin', '@typescript-eslint/parser');
     }
     packagesToFetch.push('eslint', 'prettier', 'eslint-config-prettier');
+  }
+
+  // Release automation tools (only for projects with CI/CD setup)
+  if (config.setupCD) {
+    packagesToFetch.push('@clack/prompts');
   }
 
   // Fetch all versions in parallel

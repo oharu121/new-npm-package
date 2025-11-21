@@ -36,6 +36,7 @@ export {
   generateRootIndexJs,
   generateRootIndexMjs,
   generateRootIndexDts,
+  generateReleaseScript,
 } from './files.js';
 
 // GitHub Actions workflow generators
